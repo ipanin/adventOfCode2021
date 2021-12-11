@@ -3,35 +3,31 @@
 import util
 from collections import defaultdict
 
-POS = [(-1, 0), (0, -1), (0, 1), (1, 0)]
+def solve1(matrix):
+    basins = find_basins(matrix)
 
-def solve1(data):
-    matrix = []
-    for line in data:
-        row = [int(x) for x in line]
-        matrix.append(row)
-    W = len(matrix[0])
-    H = len(matrix)
-     
-    sum = 0 
-    for i,row in enumerate(matrix):
-        for j,v in enumerate(row):
-            found = True
-            for di,dj in POS:
-                i2 = i + di
-                j2 = j + dj
-                if 0 <= i2 < H and 0 <= j2 < W and matrix[i2][j2] <= v:
-                    found = False
-                    break;
-            if found:
-                sum += v+1
+    sum = 0
+    for i,j in basins:
+        sum += matrix[i][j] + 1
     return sum
 
 def solve2(matrix):
+    basins = find_basins(matrix)
+
+    basins_sizes = []
+    for i,j in basins:
+        basins_sizes.append(calc_basin_size(matrix, i,j))
+
+    a,b,c = sorted(basins_sizes, reverse=True)[0:3]
+    return a*b*c
+
+POS = [(-1, 0), (0, -1), (0, 1), (1, 0)]
+
+def find_basins(matrix):
     W = len(matrix[0])
     H = len(matrix)
      
-    basins_sizes = []
+    basins = [] 
     for i,row in enumerate(matrix):
         for j,v in enumerate(row):
             found = True
@@ -42,9 +38,8 @@ def solve2(matrix):
                     found = False
                     break;
             if found:
-                basins_sizes.append(calc_basin_size(matrix, i,j))
-    a,b,c = sorted(basins_sizes, reverse=True)[0:3]
-    return a*b*c
+                basins.append((i,j))
+    return basins
 
 def calc_basin_size(matrix, i,j):
     map = defaultdict(int)
