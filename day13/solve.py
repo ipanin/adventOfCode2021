@@ -1,3 +1,5 @@
+# Day 13: Transparent Origami
+# Складываем поле пополам, в конце проявляется текст
 import util
 import gutil
 
